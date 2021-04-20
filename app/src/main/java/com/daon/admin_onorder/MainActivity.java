@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daon.admin_onorder.model.PrintOrderModel;
@@ -46,12 +47,20 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     AdminApplication app = new AdminApplication();
     String time;
+
+    TextView printer_status1;
+    TextView printer_status2;
+    TextView printer_status3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         pref = getSharedPreferences("pref", MODE_PRIVATE);
+
+        printer_status1 = findViewById(R.id.printer_status_1);
+        printer_status2 = findViewById(R.id.printer_status_2);
+        printer_status3 = findViewById(R.id.printer_status_3);
 
         BackThread thread = new BackThread();  // 작업스레드 생성
         thread.setDaemon(true);  // 메인스레드와 종료 동기화
@@ -392,9 +401,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (printOrderModel.getTable().contains("주문") || printOrderModel.getTable().contains("포장")) {
                 sam4sPrint.sendData(builder);
-                Log.d("daon_test0", order);
-                Log.d("daon_test1", order1);
-                Log.d("daon_test2", order2);
                 if (!order1.equals("")) {
                     sam4sPrint2.sendData(builder2);
                 }
@@ -423,8 +429,23 @@ public class MainActivity extends AppCompatActivity {
             while (true) {
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
-
+                SimpleDateFormat format = new SimpleDateFormat("hh-mm-ss",  Locale.getDefault());
+                String status_1 = "";
+                String status_2 = "";
+                String status_3 = "";
                 time = format2.format(calendar.getTime());
+                String time2 = format.format(calendar.getTime());
+                try {
+                    status_1 = app.getPrinter().getPrinterStatus()+"::"+app.getPrinter().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
+                    status_2 = app.getPrinter2().getPrinterStatus()+"::"+app.getPrinter2().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
+                    status_3 = app.getPrinter3().getPrinterStatus()+"::"+app.getPrinter3().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
+
+                    printer_status1.setText(status_1);
+                    printer_status2.setText(status_2);
+                    printer_status3.setText(status_3);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Log.d("daon_test", "time = "+time);
                 try {
                     Thread.sleep(60000);   // 1000ms, 즉 1초 단위로 작업스레드 실행

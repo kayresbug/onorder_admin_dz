@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                 printer2.resetPrinter();
                 printer3.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.102", 9100);
                 printer3.resetPrinter();
-//                printer.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.20.33", 9100);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("daon", "print error = "+e.getMessage());
@@ -188,9 +187,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }else{
-            Log.d("daon", "print error = "+printer.getPrinterStatus());
-            Log.d("daon", "print error2 = "+printer2.getPrinterStatus());
-            Log.d("daon", "print error3 = "+printer3.getPrinterStatus());
             if (printer.getPrinterStatus() == null){
                 Toast.makeText(LoginActivity.this, "1번 프린터 이상", Toast.LENGTH_SHORT).show();
 
@@ -201,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "3번 프린터 이상", Toast.LENGTH_SHORT).show();
 
             }
-//            setPrinter();
+            setPrinter();
         }
     }
     public void setPrinter(){
@@ -242,7 +238,7 @@ public class LoginActivity extends AppCompatActivity {
         Sam4sPrint sam4sPrint2 = app.getPrinter2();
         Sam4sPrint sam4sPrint3 = app.getPrinter3();
         try {
-            Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
+//            Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -306,6 +302,7 @@ public class LoginActivity extends AppCompatActivity {
             builder.addFeedLine(2);
             builder.addCut(Sam4sBuilder.CUT_FEED);
             sam4sPrint.sendData(builder);
+//            sam4sPrint.closePrinter();
         } catch (Exception e) {
             e.printStackTrace();
         }
