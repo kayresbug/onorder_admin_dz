@@ -195,15 +195,15 @@ public class MainActivity extends AppCompatActivity {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     if (printOrderModel.getPrintStatus().equals("x")) {
                         try {
-//                            if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
+                            if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
 
                             print(printOrderModel);
                             printOrderModel.setPrintStatus("o");
                             FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
-//                            }else{
-//                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
-//                                mp.start();
-//                            }
+                            }else{
+                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
+                                mp.start();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

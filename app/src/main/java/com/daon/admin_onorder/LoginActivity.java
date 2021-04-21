@@ -100,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                 printer.resetPrinter();
                 printer2.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.20.193", 6001);
                 printer2.resetPrinter();
-//                printer3.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.102", 9100);
-//                printer3.resetPrinter();
+                printer3.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.102", 9100);
+                printer3.resetPrinter();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("daon", "print error = "+e.getMessage());
@@ -157,8 +157,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void setFcm(String fcm_id) throws Exception {
 
-//        if (printer.getPrinterStatus() != null && printer2.getPrinterStatus() != null && printer3.getPrinterStatus() != null) {
-        if (printer != null){
+        if (printer.getPrinterStatus() != null && printer2.getPrinterStatus() != null && printer3.getPrinterStatus() != null) {
+//        if (printer != null){
             String str_id = "ddz12";
             String str_pass = "1234";
             Retrofit retrofit = new Retrofit.Builder()
