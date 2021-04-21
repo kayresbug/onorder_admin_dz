@@ -141,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "준비중 입니다.", Toast.LENGTH_SHORT).show();
             }
         });
+        initFirebase();
+    }
+    public void initFirebase(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",  Locale.getDefault());
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
@@ -160,17 +163,17 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("daon_test", "print = " + item.getKey());
                     try {
 
-                            if (printOrderModel.getPrintStatus().equals("x")) {
+                        if (printOrderModel.getPrintStatus().equals("x")) {
 //                                if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
-                                    print(printOrderModel);
-                                    printOrderModel.setPrintStatus("o");
-                                    FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
+                            print(printOrderModel);
+                            printOrderModel.setPrintStatus("o");
+                            FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
 //                                }else {
 //
 //                                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
 //                                    mp.start();
 //                                }
-                            }
+                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -192,15 +195,15 @@ public class MainActivity extends AppCompatActivity {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     if (printOrderModel.getPrintStatus().equals("x")) {
                         try {
-                            if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
+//                            if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
 
-                                print(printOrderModel);
-                                printOrderModel.setPrintStatus("o");
-                                FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
-                            }else{
-                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
-                                mp.start();
-                            }
+                            print(printOrderModel);
+                            printOrderModel.setPrintStatus("o");
+                            FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
+//                            }else{
+//                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
+//                                mp.start();
+//                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -401,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (printOrderModel.getTable().contains("주문") || printOrderModel.getTable().contains("포장")) {
                 sam4sPrint.sendData(builder);
+//                sam4sPrint2.sendData(builder);
                 if (!order1.equals("")) {
                     sam4sPrint2.sendData(builder2);
                 }
@@ -435,6 +439,13 @@ public class MainActivity extends AppCompatActivity {
                 String status_3 = "";
                 time = format2.format(calendar.getTime());
                 String time2 = format.format(calendar.getTime());
+
+                SimpleDateFormat format3 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
+                String time_ = format3.format(calendar.getTime());
+                if (time != time_){
+                    time = time_;
+                    initFirebase();
+                }
                 try {
                     status_1 = app.getPrinter().getPrinterStatus()+"::"+app.getPrinter().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
                     status_2 = app.getPrinter2().getPrinterStatus()+"::"+app.getPrinter2().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
