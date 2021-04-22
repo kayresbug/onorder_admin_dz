@@ -155,14 +155,11 @@ public class MainActivity extends AppCompatActivity {
         time = format2.format(calendar.getTime());
         String time2 = format2.format(calendar.getTime());
         FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot item : snapshot.getChildren()) {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
-                    Log.d("daon_test", "print = " + item.getKey());
                     try {
-
                         if (printOrderModel.getPrintStatus().equals("x")) {
 //                                if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
                             print(printOrderModel);
@@ -195,11 +192,11 @@ public class MainActivity extends AppCompatActivity {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     if (printOrderModel.getPrintStatus().equals("x")) {
                         try {
-                            if (sam4sPrint.getPrinterStatus() != null && sam4sPrint2.getPrinterStatus() != null && sam4sPrint3.getPrinterStatus() != null) {
+                            if (sam4sPrint.getPrinterStatus() != null) {
 
-                            print(printOrderModel);
-                            printOrderModel.setPrintStatus("o");
-                            FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
+                                print(printOrderModel);
+                                printOrderModel.setPrintStatus("o");
+                                FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
                             }else{
                                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
                                 mp.start();
@@ -267,9 +264,7 @@ public class MainActivity extends AppCompatActivity {
         Sam4sPrint sam4sPrint = app.getPrinter();
         Sam4sPrint sam4sPrint2 = app.getPrinter2();
         Sam4sPrint sam4sPrint3 = app.getPrinter3();
-        Log.d("daon_test0", order);
-        Log.d("daon_test1", order1);
-        Log.d("daon_test2", order2);
+
         try {
             Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
         } catch (Exception e) {
@@ -437,14 +432,20 @@ public class MainActivity extends AppCompatActivity {
                 String status_1 = "";
                 String status_2 = "";
                 String status_3 = "";
-                time = format2.format(calendar.getTime());
+//                time = format2.format(calendar.getTime());
                 String time2 = format.format(calendar.getTime());
 
                 SimpleDateFormat format3 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
                 String time_ = format3.format(calendar.getTime());
-                if (time != time_){
-                    time = time_;
-                    initFirebase();
+                Log.d("daon_test", "time1 = "+time);
+                Log.d("daon_test", "time1 = "+time_);
+                if (time != null) {
+                    if (!time.equals(time_)) {
+                        time = time_;
+                        Log.d("daon_test", "time = " + time);
+                        Log.d("daon_test", "time = " + time_);
+                        initFirebase();
+                    }
                 }
                 try {
                     status_1 = app.getPrinter().getPrinterStatus()+"::"+app.getPrinter().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
@@ -457,7 +458,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.d("daon_test", "time = "+time);
                 try {
                     Thread.sleep(60000);   // 1000ms, 즉 1초 단위로 작업스레드 실행
                 } catch (InterruptedException e) {
@@ -472,7 +472,6 @@ public class MainActivity extends AppCompatActivity {
         Sam4sPrint sam4sPrint2 = app.getPrinter2();
         Sam4sPrint sam4sPrint3 = app.getPrinter3();
         String[] orderArr = printOrderModel.getOrder().split("###");
-        Log.d("daon_test", orderArr[0]);
 
         String order = printOrderModel.getOrder();
         order = order.replace("###", "\n\n");

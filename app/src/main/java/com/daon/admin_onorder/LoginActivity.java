@@ -109,16 +109,14 @@ public class LoginActivity extends AppCompatActivity {
 
             if (!printer.IsConnected(Sam4sPrint.DEVTYPE_ETHERNET)){
                 try {
-
-                    Log.d("daon", "print error = "+printer.getPrinterStatus());
-                    Log.d("daon", "print error2 = "+printer2.getPrinterStatus());
-                    Log.d("daon", "print error3 = "+printer3.getPrinterStatus());
+//                    Log.d("daon", "print error = "+printer.getPrinterStatus());
+//                    Log.d("daon", "print error2 = "+printer2.getPrinterStatus());
+//                    Log.d("daon", "print error3 = "+printer3.getPrinterStatus());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }else{
                 try {
-                    Log.d("daon", "aaa = "+printer2.getPrinterStatus());
                     app.setPrinter(printer);
                     app.setPrinter2(printer2);
 //                    app.setPrinter3(printer3);
@@ -133,14 +131,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         loginBtn = findViewById(R.id.loginactivity_btn_login);
-//        loginBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-
-//
-//
-//            }
-//        });
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
