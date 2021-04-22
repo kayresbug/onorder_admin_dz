@@ -226,7 +226,7 @@ public class PopupOrderActivity extends AppCompatActivity {
             builder.addText("합  계 : ");
             builder.addTextSize(2,1);
             builder.addTextBold(true);
-            builder.addText("-"+(myFormatter.format(Integer.parseInt(price))+"원");
+            builder.addText("-"+(myFormatter.format(Integer.parseInt(price))+"원"));
             builder.addFeedLine(1);
             builder.addTextSize(1,1);
             builder.addTextPosition(120);
