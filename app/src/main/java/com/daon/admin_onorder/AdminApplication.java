@@ -19,6 +19,17 @@ public class AdminApplication extends Application {
     public static void setPrinter3(Sam4sPrint printer1){
         printer3 = printer1;
     }
+
+    public static boolean IsConnected1(){
+        return printer.IsConnected(0);
+    }
+    public static boolean IsConnected2(){
+        return printer2.IsConnected(0);
+    }
+    public static boolean IsConnected3(){
+        return printer3.IsConnected(0);
+    }
+
     public static Sam4sPrint getPrinter(){
         return printer;
     }

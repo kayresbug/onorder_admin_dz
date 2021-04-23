@@ -60,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Sam4sPrint printer = new Sam4sPrint();
-    //Sam4sPrint printer2 = new Sam4sPrint();
-    //Sam4sPrint printer3 = new Sam4sPrint();
+    Sam4sPrint printer2 = new Sam4sPrint();
+    Sam4sPrint printer3 = new Sam4sPrint();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +96,12 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             try {
-                printer.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.20.31", 9100);
+                printer.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.100", 9100);
                 printer.resetPrinter();
-                //printer2.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.20.193", 6001);
-                //printer2.resetPrinter();
-                //printer3.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.102", 9100);
-                //printer3.resetPrinter();
+                printer2.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.101", 9100);
+                printer2.resetPrinter();
+                printer3.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.102", 9100);
+                printer3.resetPrinter();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("daon", "print error = "+e.getMessage());
@@ -118,8 +118,8 @@ public class LoginActivity extends AppCompatActivity {
             }else{
                 try {
                     app.setPrinter(printer);
-                    //app.setPrinter2(printer2);
-//                    app.setPrinter3(printer3);
+                    app.setPrinter2(printer2);
+                    app.setPrinter3(printer3);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -181,15 +181,13 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "1번 프린터 이상", Toast.LENGTH_SHORT).show();
 
             }
-            /*else if (printer2.getPrinterStatus() == null){
+            else if (printer2.getPrinterStatus() == null){
                 Toast.makeText(LoginActivity.this, "2번 프린터 이상", Toast.LENGTH_SHORT).show();
 
             }else if (printer3.getPrinterStatus() == null){
                 Toast.makeText(LoginActivity.this, "3번 프린터 이상", Toast.LENGTH_SHORT).show();
 
             }
-
-             */
             setPrinter();
         }
     }
@@ -231,8 +229,8 @@ public class LoginActivity extends AppCompatActivity {
     public void print2(){
 
         Sam4sPrint sam4sPrint = app.getPrinter();
-        //Sam4sPrint sam4sPrint2 = app.getPrinter2();
-        //Sam4sPrint sam4sPrint3 = app.getPrinter3();
+        Sam4sPrint sam4sPrint2 = app.getPrinter2();
+        Sam4sPrint sam4sPrint3 = app.getPrinter3();
         try {
 //            Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
         } catch (Exception e) {

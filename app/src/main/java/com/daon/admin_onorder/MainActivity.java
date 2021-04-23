@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         BackThread thread = new BackThread();  // 작업스레드 생성
         thread.setDaemon(true);  // 메인스레드와 종료 동기화
-        thread.start();
+        //thread.start();
 
         bottom_order = findViewById(R.id.bottom_menu3);
         bottom_order.setOnClickListener(new View.OnClickListener() {
@@ -148,10 +148,6 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",  Locale.getDefault());
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
 
-        Sam4sPrint sam4sPrint = app.getPrinter();
-        //Sam4sPrint sam4sPrint2 = app.getPrinter2();
-        //Sam4sPrint sam4sPrint3 = app.getPrinter3();
-
         time = format2.format(calendar.getTime());
         String time2 = format2.format(calendar.getTime());
         FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
@@ -161,9 +157,10 @@ public class MainActivity extends AppCompatActivity {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     try {
                         if (printOrderModel.getPrintStatus().equals("x")) {
-                            print(printOrderModel);
-                            printOrderModel.setPrintStatus("o");
-                            FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
+                            if(print(printOrderModel)==true) {
+                                printOrderModel.setPrintStatus("o");
+                                FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
+                            }
                             /*
                                 }else {
 
@@ -193,15 +190,9 @@ public class MainActivity extends AppCompatActivity {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     if (printOrderModel.getPrintStatus().equals("x")) {
                         try {
-                            if (sam4sPrint.getPrinterStatus() != null) {
-
                                 print(printOrderModel);
                                 printOrderModel.setPrintStatus("o");
                                 FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
-                            }else{
-                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
-                                mp.start();
-                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -217,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void print(PrintOrderModel printOrderModel) throws InterruptedException {
+    public boolean print(PrintOrderModel printOrderModel) throws InterruptedException {
         Log.d("daon_test = ", printOrderModel.getOrder());
         String[] orderArr = printOrderModel.getOrder().split("###");
         Log.d("daon_test", orderArr[0]);
@@ -261,25 +252,46 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if(app.IsConnected())
-        {
-
-        }
-        else
+        if(app.IsConnected1()==false)
         {
             Sam4sPrint sam4sPrint1 = app.getPrinter();
             try {
-                sam4sPrint1.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.20.31", 9100);
+                sam4sPrint1.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.100", 9100);
+                Thread.sleep(300);
             } catch (Exception exception) {
                 exception.printStackTrace();
+                return false;
             }
             app.setPrinter(sam4sPrint1);
-            Thread.sleep(300);
+        }
+        if(app.IsConnected2()==false)
+        {
+            Sam4sPrint sam4sPrint2 = app.getPrinter2();
+            try {
+                sam4sPrint2.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.101", 9100);
+                Thread.sleep(300);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return false;
+            }
+            app.setPrinter2(sam4sPrint2);
+        }
+        if(app.IsConnected3()==false)
+        {
+            Sam4sPrint sam4sPrint3 = app.getPrinter3();
+            try {
+                sam4sPrint3.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.102", 9100);
+                Thread.sleep(300);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return false;
+            }
+            app.setPrinter3(sam4sPrint3);
         }
 
         Sam4sPrint sam4sPrint = app.getPrinter();
-        //Sam4sPrint sam4sPrint2 = app.getPrinter2();
-        //Sam4sPrint sam4sPrint3 = app.getPrinter3();
+        Sam4sPrint sam4sPrint2 = app.getPrinter2();
+        Sam4sPrint sam4sPrint3 = app.getPrinter3();
 
         try {
             Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
@@ -287,8 +299,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Sam4sBuilder builder = new Sam4sBuilder("ELLIX30", Sam4sBuilder.LANG_KO);
-        //Sam4sBuilder builder2 = new Sam4sBuilder("ELLIX30", Sam4sBuilder.LANG_KO);
-        //Sam4sBuilder builder3 = new Sam4sBuilder("ELLIX30", Sam4sBuilder.LANG_KO);
+        Sam4sBuilder builder2 = new Sam4sBuilder("ELLIX30", Sam4sBuilder.LANG_KO);
+        Sam4sBuilder builder3 = new Sam4sBuilder("ELLIX30", Sam4sBuilder.LANG_KO);
         try {
             String type = "(카드)";
             if (printOrderModel.getOrdertype().equals("cash")){
@@ -334,7 +346,6 @@ public class MainActivity extends AppCompatActivity {
             builder.addFeedLine(2);
             builder.addCut(Sam4sBuilder.CUT_FEED);
 
-/*
             //2번 프린터
             builder2.addTextAlign(Sam4sBuilder.ALIGN_CENTER);
             builder2.addFeedLine(1);
@@ -413,12 +424,10 @@ public class MainActivity extends AppCompatActivity {
             /////
 //            sam4sPrint.sendData(builder);
 
-
- */
             if (printOrderModel.getTable().contains("주문") || printOrderModel.getTable().contains("포장")) {
                 sam4sPrint.sendData(builder);
 //                sam4sPrint2.sendData(builder);
-                /*
+
                 if (!order1.equals("")) {
                     sam4sPrint2.sendData(builder2);
                 }
@@ -426,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
                     sam4sPrint3.sendData(builder3);
                 }
 
-                 */
+
                 if (printOrderModel.getOrdertype().equals("card")) {
                     print2(printOrderModel);
                 }
@@ -439,13 +448,16 @@ public class MainActivity extends AppCompatActivity {
 
             Thread.sleep(300);
             sam4sPrint.closePrinter();
+            sam4sPrint2.closePrinter();
+            sam4sPrint3.closePrinter();
 
             MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
             mp.start();
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-
+        return true;
     }
 
     class BackThread extends Thread{  // Thread 를 상속받은 작업스레드 생성
@@ -473,19 +485,19 @@ public class MainActivity extends AppCompatActivity {
                         initFirebase();
                     }
                 }
-//                try {
-//                    status_1 = app.getPrinter().getPrinterStatus()+"::"+app.getPrinter().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
-//                    //status_2 = app.getPrinter2().getPrinterStatus()+"::"+app.getPrinter2().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
-//                    //status_3 = app.getPrinter3().getPrinterStatus()+"::"+app.getPrinter3().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
-//
-//                    printer_status1.setText(status_1);
-//                    //printer_status2.setText(status_2);
-//                    //printer_status3.setText(status_3);
-//                } catch (Exception e) {
-//                    status_1 ="에러";
-//                    printer_status1.setText(status_1);
-//                    e.printStackTrace();
-//                }
+                try {
+                    status_1 = app.getPrinter().getPrinterStatus()+"::"+app.getPrinter().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
+                    //status_2 = app.getPrinter2().getPrinterStatus()+"::"+app.getPrinter2().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
+                    //status_3 = app.getPrinter3().getPrinterStatus()+"::"+app.getPrinter3().IsConnected(Sam4sPrint.DEVTYPE_ETHERNET) + "::"+time2;
+
+                    printer_status1.setText(status_1);
+                    //printer_status2.setText(status_2);
+                    //printer_status3.setText(status_3);
+                } catch (Exception e) {
+                    status_1 ="에러";
+                    printer_status1.setText(status_1);
+                    e.printStackTrace();
+                }
                 try {
                     Thread.sleep(1000);   // 1000ms, 즉 1초 단위로 작업스레드 실행
                 } catch (InterruptedException e) {
@@ -494,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void print2(PrintOrderModel printOrderModel){
+    public void print2(PrintOrderModel printOrderModel) throws InterruptedException {
 
         Sam4sPrint sam4sPrint = app.getPrinter();
         //Sam4sPrint sam4sPrint2 = app.getPrinter2();
@@ -597,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
             builder.addCut(Sam4sBuilder.CUT_FEED);
             //sam4sPrint.sendData(builder);
             sam4sPrint.sendData(builder);
-            sam4sPrint.closePrinter();
+            //sam4sPrint.closePrinter();
         } catch (Exception e) {
             e.printStackTrace();
         }
